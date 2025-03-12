@@ -1,7 +1,7 @@
 # Django Payments & Orders Management (Chapter 9 - Django By Example)
 
 ## Overview
-This repository is an implementation of **Chapter 9** from the book **Django By Example**. It demonstrates how to integrate **Stripe** for payment processing, manage orders, and extend the Django administration site with custom features.
+This repository implements payment processing and order management features in a Django project, based on **Chapter 9 of Django By Example**. It demonstrates how to integrate **Stripe** for credit card payments, manage order statuses, export order data in CSV format, and generate PDF invoices dynamically.
 
 ## Features
 - **Stripe Payment Gateway Integration**: Secure credit card payments.
@@ -72,4 +72,3 @@ This project is based on the implementation from **Django By Example** and follo
 
 ---
 Feel free to contribute or modify as needed!
-
