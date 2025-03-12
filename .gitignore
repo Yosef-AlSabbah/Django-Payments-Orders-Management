@@ -1,0 +1,53 @@
+# Ignore PyCharm specific files
+.idea/
+*.iml
+
+# Ignore Python compiled files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore virtual environments
+venv/
+.env/
+env/
+
+# Ignore environment variables file
+.env
+
+# Ignore database files
+*.sqlite3
+*.db
+
+# Ignore migrations cache (keep actual migrations)
+**/migrations/__pycache__/
+**/migrations/*.pyc
+
+# Ignore logs
+*.log
+logs/
+debug.log
+
+# Ignore media and static files (if generated dynamically)
+media/
+staticfiles/
+
+# Ignore Docker files
+.dockerignore
+
+# Ignore coverage and testing files
+.coverage
+*.cover
+htmlcov/
+nosetests.xml
+coverage.xml
+*.mo
+*.pot
+
+# Ignore compiled UI files (if using PyQt or similar)
+*.qrc
+*.ui
+
+# Ignore Jupyter Notebook checkpoints (if applicable)
+.ipynb_checkpoints/
