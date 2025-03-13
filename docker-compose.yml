@@ -1,0 +1,17 @@
+services:
+  blog_db:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: blog
+      POSTGRES_USER: blog
+      POSTGRES_PASSWORD: y.0592876798
+
+  web:
+    build: .
+    environment:
+      DB_HOST: blog_db
+      DB_NAME: blog
+      DB_USER: blog
+      DB_PASSWORD: y.0592876798
+    depends_on:
+      - blog_db

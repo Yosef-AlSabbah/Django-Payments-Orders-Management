@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 
 
@@ -44,9 +45,23 @@ class OrderItem(models.Model):
         decimal_places=2,
     )
     quantity = models.PositiveIntegerField(default=1)
+    stripe_id = models.CharField(max_length=250, blank=True)
 
     def __str__(self):
         return str(self.id)
 
     def get_cost(self):
         return self.price * self.quantity
+
+    def get_stripe_url(self):
+        if not self.stripe_id:
+            # no payment associated
+            return ''
+        if '_test_' in settings.STRIPE_SECRET_KEY:
+            # Stripe path for test payments
+            path = '/test/'
+        else:
+            # Stripe path for real payments
+            path = '/'
+
+        return f'https://dashboard.stripe.com{path}payments/{self.stripe_id}'
