@@ -4,9 +4,12 @@ from io import BytesIO
 from celery import shared_task
 # from django.contrib.staticfiles import finders
 from django.core.mail import EmailMessage
+from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 
 from orders.models import Order
+from shop.models import Product
+from shop.recommender import Recommender
 
 
 @shared_task
@@ -35,3 +38,12 @@ def payment_completed(order_id):
     )
     # send e-mail
     email.send()
+
+
+@shared_task
+def add_items_for_recommender(order_id):
+    order = get_object_or_404(Order, id=order_id)
+    product_ids = order.items.values_list('product_id', flat=True)
+    products = Product.objects.filter(id__in=product_ids)
+    r = Recommender()
+    r.products_bought(products)

@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 
 from orders.models import Order
-from .tasks import payment_completed
+from .tasks import payment_completed, add_items_for_recommender
 
 
 @csrf_exempt
@@ -33,7 +33,9 @@ def stripe_webhook(request):
                 order.stripe_id = session.payment_intent
                 order.save()
                 # launch asynchronous task
+                add_items_for_recommender.delay(order.id)
                 payment_completed.delay(order.id)
+
     except ValueError:
         # Invalid payload
         return HttpResponse(status=400)

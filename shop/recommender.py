@@ -14,7 +14,7 @@ class Recommender:
     def get_product_key(self, id):
         return f'product:{id}:purchased_with'
 
-    def products_brought(self, products):
+    def products_bought(self, products):
         product_ids = [product.id for product in products]
         for product_id in product_ids:
             for with_id in product_ids:
@@ -50,3 +50,7 @@ class Recommender:
         suggested_products.sort(key=lambda x: suggested_product_ids.index(x.id))
 
         return suggested_products
+
+    def clear_purchases(self):
+        for id in Product.objects.values_list('id', flat=True):
+            r.delete(self.get_product_key(id))
