@@ -3,17 +3,18 @@ from decimal import Decimal
 from django.conf import settings
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 from coupons.models import Coupon
 
 
 class Order(models.Model):
-    first_name = models.CharField(max_length=50)
-    last_name = models.CharField(max_length=50)
-    email = models.EmailField()
-    address = models.CharField(max_length=250)
-    postal_code = models.CharField(max_length=20)
-    city = models.CharField(max_length=100)
+    first_name = models.CharField(_('first name'), max_length=50)
+    last_name = models.CharField(_('last name'), max_length=50)
+    email = models.EmailField(_('e-mail'), )
+    address = models.CharField(_('address'), max_length=250)
+    postal_code = models.CharField(_('postal code'), max_length=20)
+    city = models.CharField(_('city'), max_length=100)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     paid = models.BooleanField(default=False)
@@ -57,7 +58,23 @@ class Order(models.Model):
 
     def get_total_cost(self):
         total_cost = self.get_total_cost_before_discount()
-        return total_cost - self.get_discount()
+        return total_cost - self.get_discount() + self.get_shipping_cost()
+
+    def get_total_weight(self):
+        return sum(
+            item.get_weight() for item in self.items.all()
+        )
+
+    def get_shipping_cost(self):
+        total_weight = self.get_total_weight()
+
+        # Define your shipping pricing rules based on weight
+        if total_weight <= 1000:  # 1 kg
+            return Decimal(5)  # Example: $5 for orders up to 1kg
+        elif total_weight <= 5000:  # 5 kg
+            return Decimal(10)  # Example: $10 for orders up to 5kg
+        else:
+            return Decimal(20)  # Example: $20 for orders over 5kg
 
     def get_stripe_url(self):
         if not self.stripe_id:
@@ -96,3 +113,6 @@ class OrderItem(models.Model):
 
     def get_cost(self):
         return self.price * self.quantity
+
+    def get_weight(self):
+        return self.product.weight * self.quantity

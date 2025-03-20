@@ -37,11 +37,12 @@ def cart_detail(request):
                 'override': True,
             }
         )
-    cart_products = [item for item in cart]
+    cart_products = [item['product'] for item in cart]
     if cart_products:
         r = Recommender()
         recommended_products = r.suggest_products_for(cart_products, 4)
-    recommended_products = []
+    else:
+        recommended_products = []
     coupon_apply_form = CouponApplyForm()
     return render(
         request,

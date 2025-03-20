@@ -9,10 +9,15 @@ def product_list(request, category_slug=None):
     category = None
     categories = Category.objects.all()
     if not category_slug:
-        products = Product.offered.all()
+        products = Product.objects.all()
     else:
-        category = get_object_or_404(Category, slug=category_slug)
-        products = Product.offered.filter(category=category)
+        language = request.LANGUAGE_CODE
+        category = get_object_or_404(
+            Category,
+            translations__language_code=language,
+            translations__slug=category_slug
+        )
+        products = Product.objects.filter(category=category)
 
     return render(
         request,
@@ -26,7 +31,14 @@ def product_list(request, category_slug=None):
 
 
 def product_detail(request, id, slug):
-    product = get_object_or_404(Product, available=True, id=id, slug=slug)
+    language = request.LANGUAGE_CODE
+    product = get_object_or_404(
+        Product,
+        available=True,
+        id=id,
+        translations__language_code=language,
+        translations__slug=slug
+    )
     cart_product_form = CartAddProductForm()
     r = Recommender()
     recommended_products = r.suggest_products_for([product], 4)

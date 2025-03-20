@@ -48,6 +48,21 @@ def payment_process(request):
                 }
             )
 
+        # Add shipping costs
+        shipping_cost = order.get_shipping_cost()
+        session_data['line_items'].append(
+            {
+                'price_data': {
+                    'unit_amount': int(shipping_cost * Decimal('100')),
+                    'currency': 'usd',
+                    'product_data': {
+                        'name': 'Shipping'
+                    }
+                },
+                'quantity': 1,
+            }
+        )
+
         if order.coupon:
             stripe_coupon = stripe.Coupon.create(
                 name=order.coupon.code,
